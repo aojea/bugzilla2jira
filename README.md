@@ -15,8 +15,8 @@ It uses a config file to specify the following parameters:
 
 * JIRA url, user, password, project and product. The product is a label in JIRA.
 
-By default the tool only displays the changes needed, you have to use the `-w`
-switch to force the changes in JIRA.
+By default the tool don't write the changes in JIRA to avoid mistakes, you have
+to use the `-w` switch to do it.
 
 ### Example
 
