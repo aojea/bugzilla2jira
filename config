@@ -1,0 +1,12 @@
+[bugzilla]
+url: bugzilla.yourdomain.com
+user: youruser
+pass: yourpass
+product: yourproduct
+
+[jira]
+url: https://jira.yourdomain.com
+user: youruser
+pass: yourproduct
+product: JIRA label that identifies your product
+project: JIRA project
