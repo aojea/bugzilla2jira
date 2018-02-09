@@ -25,9 +25,7 @@ python bz2jira.py -c config
 
 Found 177 bugs in BugZilla with our query
 Quicker query processing time: 5.2857439518
-Sync status Bug id=1016972 summary=database create failed with time
-out status=CONFIRMED jira_status=Open
-Create new Bug id=1048211 summary=metric for cpu.user_perc value does
-not match vmstat value when vm have cpu load status=CONFIRMED
+Sync status Bug id=1016972 summary=database create failed with time out status=CONFIRMED jira_status=Open
+Create new Bug id=1048211 summary=metric for cpu.user_perc value does not match vmstat value when vm have cpu load status=CONFIRMED
 Create new Bug id=1050983 summary=Nodes rebooted during deployment status=NEW
 ```
