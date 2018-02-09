@@ -28,13 +28,13 @@ status_mapping = {
     'RESOLVED' : 'Closed'
 }
 
-def sync_bug_status(jira, issue, bz_status, jira_status):
+def sync_bug_status(jira, issue):
     # TODO support syncing status
-    # To be able to graph the issues trend we support only Open and Resolved 
+
+    # Debug transitions
     transitions = jira.transitions(issue)
     for t in transitions:
         print("id: %s name: %s" % (t['id'], t['name']))
-    # jira.transition_issue(issue, transitionId=131)
 
 def main(arguments):
     parser = argparse.ArgumentParser()
@@ -77,24 +77,31 @@ def main(arguments):
     print("Found %d bugs in BugZilla with our query" % len(bugs))
     print("Quicker query processing time: %s" % (t2 - t1))
 
-    # Sync Bugzilla 2 Jira
+    # Sync Bugzilla bugs with Jira
+    # For simplicity and for reporting only 2 states are considered in JIRA
+    # Open and Closed(Resolved)
     cnt_update = 0
     cnt_new = 0
     for bzbug in bugs:
         if bzbug.see_also:
-            # Check if the bug exists in Jira and sync status
+            # Check if the bug exists in Jira and sync the status
+            # we look for a JIRA in link in the see_also fields in bugzilla
             for url in bzbug.see_also:
                 if jira_url in url:
                     issue = jac.issue(url.rsplit('/',1)[-1])
-                    # Sync status
-                    if not args.write_jira:
+                    # Assuming that JIRA issues will only have 2 status if the bug is
+                    # resolved in bugzilla we close it in JIRA
+                    if not args.write_jira and bzbug.status == "RESOLVED" and issue.fields.status == "Open":
                         print("Sync status Bug id=%s summary=%s status=%s jira_status=%s"
                               % (bzbug.id, bzbug.summary, status_mapping[bzbug.status], issue.fields.status))
-                    elif status_mapping[bzbug.status] != issue.fields.status:
-                        sync_bug_status(jac, issue, bzbug.status, issue.fields.status)
+                    elif bzbug.status == "RESOLVED" and issue.fields.status == "Open":
+                        # Close Issue
+                        jira.transition_issue(issue, '2')
                         cnt_update += 1
                     else:
-                        print("ISSUES ARE SYNCED")
+                        print("Not need to Sync Bug id=%s summary=%s status=%s jira_status=%s"
+                              % (bzbug.id, bzbug.summary, status_mapping[bzbug.status], issue.fields.status))
+                    # We assume 1<->1 links from bugzilla to jira
                     break
         else:
             # Create Bugzilla bug in JIRA
